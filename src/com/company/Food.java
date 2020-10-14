@@ -1,4 +1,7 @@
 package com.company;
 
-public class Food {
+public abstract class Food {
+    public String name;
+    public int Price;
+    //do a hash map here instead of array list (maybe)
 }

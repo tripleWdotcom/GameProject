@@ -1,4 +1,6 @@
 package com.company;
 
-public class Burger {
+public class Burger extends Food {
+    int weight =2;
+
 }

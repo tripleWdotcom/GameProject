@@ -1,4 +1,5 @@
 package com.company;
 
-public class BigPizza {
+public class BigPizza extends Food {
+    int weight =3;
 }

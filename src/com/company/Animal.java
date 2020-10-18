@@ -10,23 +10,21 @@ public abstract class Animal {
         MALE,
         FEMALE,
     }
-
-
     public Animal(String animalName,String  gender){
-        this.health=health;
+        this.health=100;
         this.animalName=animalName;
         this.living=true;
         this.gender= Gender.valueOf(gender.toUpperCase());
 
     }
-
-    public  int randomHealthDecrease(double health) {
+    public static int randomHealthDecrease(double health) {
         double random = (int)(Math.random() * 20) + 11;
         random=100-random;
         health*=(random/100);
         int hp =(int) health;
         return hp;
     }
+
 
     public  void checkHealth(int health){
         if(health<=2)
@@ -50,12 +48,10 @@ public abstract class Animal {
             System.out.println("Different species. that wont work out.Please select the same species");
         if(this.gender!=animalToMate.gender){
 
+
             //create new animal
         }
 
-
     }
-
-
 
 }

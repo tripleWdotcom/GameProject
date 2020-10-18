@@ -1,10 +1,11 @@
 package com.company;
 
 public class Dog extends Animal {
+    public  int price;
 
-    public double health;
 
-    public Dog(String name,double health,String  gender){
+    public Dog(String name,String  gender){
         super(name,gender);
+        this.price=100;
     }
 }

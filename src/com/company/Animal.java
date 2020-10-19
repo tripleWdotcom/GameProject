@@ -47,8 +47,6 @@ public abstract class Animal {
         if(!this.getClass().equals(animalToMate.getClass()))
             System.out.println("Different species. that wont work out.Please select the same species");
         if(this.gender!=animalToMate.gender){
-
-
             //create new animal
         }
 

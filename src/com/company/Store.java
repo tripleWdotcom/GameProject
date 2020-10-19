@@ -20,8 +20,12 @@ public class Store {
     }
 
     public String nameToAnimal(){
-        System.out.println("Name it: ");
+        System.out.print("===Put a name to your new animal===" +
+                "\n---------------------------------------------" +
+                "\nName: ");
         var nameToAnimal=scan.next();
+        System.out.print("---------------------------------------------\n");
+
         return nameToAnimal;
     }
 
@@ -37,15 +41,16 @@ public class Store {
         return chosenGender;
         }
 
-    public Animal buyFood(Player PlayerName, int opt){
-        Animal animalToReturn=null;
+    public Food buyFood(Player PlayerName, int opt){
+        Food foodToReturn=null;
         switch (opt){
-            case 1 -> new BigPizza();
-            case 2 -> new Burger();
-            case 3 -> new Salad();
+            case 1 -> foodToReturn=new BigPizza();
+            case 2 -> foodToReturn=new Burger();
+            case 3 -> foodToReturn=new Salad();
         }
-        return animalToReturn;
+        return foodToReturn;
     }
+
 
 
     }

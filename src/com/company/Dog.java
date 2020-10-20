@@ -1,11 +1,10 @@
 package com.company;
 
 public class Dog extends Animal {
-    public static int price;
+    public static int price = 480;
 
 
     public Dog(String name,String  gender){
-        super(name,gender);
-        this.price=4800;
+        super(name,gender, price);
     }
 }

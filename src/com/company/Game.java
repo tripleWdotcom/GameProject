@@ -39,6 +39,8 @@ public class Game {
                 System.out.println(ANSI_CYAN + "ROUND " + (roundCounter + 1) + ANSI_RESET);
                 System.out.println("=== " + ANSI_CYAN + player.name.toUpperCase() + ANSI_RESET + " === is your turn to play----------------");
                 roundOptions(player);
+                saveSickAnimal(player);
+
             }
             roundCounter++;
         }
@@ -48,7 +50,6 @@ public class Game {
     }
 
     public void roundOptions(Player playerName) {
-        //System.out.println("=== "+playerName.name + " === is playing----------------");
         System.out.println("You have this amount of money available: $" + playerName.money);
         decreaseAnimalsHealth(playerName);
         removeDeadAnimals(playerName);
@@ -71,9 +72,6 @@ public class Game {
             case 2 -> sellOptions(playerName);
             case 3 -> feedOptions(playerName);
             case 4 -> mateOptions(playerName);
-        }
-        if (opt == 5) {
-            return;
         }
     }
 
@@ -294,15 +292,63 @@ public class Game {
     }
 
     public void feedOptions(Player playerName) {
-        System.out.println("Write the name of the animal you want to feed" +
-                "\n---------------------------------------------");
-        for (Animal animal : playerName.haveAnimal) {
-            System.out.print("-" + animal.getClass().getSimpleName());
-            System.out.print(" " + " '" + animal.animalName.toUpperCase() + "' ");
-            System.out.print(" " + "(" + (int) animal.health + "% hp)");
+        if (playerName.haveFood.size() != 0) {
+            System.out.println("Write the name of the animal you want to feed" +
+                    "\n---------------------------------------------");
+            for (Animal animal : playerName.haveAnimal) {
+                System.out.print("-" + animal.getClass().getSimpleName());
+                System.out.print(" " + " '" + animal.animalName.toUpperCase() + "' ");
+                System.out.print(" " + "(" + (int) animal.health + "% hp)");
+            }
+            System.out.println("\n---------------------------------------------");
+            System.out.println("Animal to feed: ");
+            var animalToFeed = scan.next();
+            if (animalToFeed.equalsIgnoreCase("e")) {
+                return;
+            }
+            Animal hungryAnimal = null;
+            for (int i = 0; i < playerName.haveAnimal.size(); i++) {
+                if (playerName.haveAnimal.get(i).animalName.equalsIgnoreCase(animalToFeed)) {
+                    hungryAnimal = playerName.haveAnimal.get(i);
+                }
+            }
+            if (hungryAnimal == null) {
+                System.out.println("That name does not exist, Try again");
+                feedOptions(playerName);
+            } else {
+                showFood(playerName);
+                var foodInput = "";
+                var exit = false;
+                do {
+                    System.out.println("What kid of food do you want to use. Type (S) for Salad, (B) for Burger and (P) for Big Pizza ");
+                    foodInput = scan.next();
+                    if (foodInput.equalsIgnoreCase("s") && playerName.haveFood.containsKey(Salad.name) && playerName.haveFood.get(Salad.name) != 0) {
+                        foodInput = "Salad";
+                        exit = true;
+                    }
+                    if (foodInput.equalsIgnoreCase("b") && playerName.haveFood.containsKey(Burger.name) && playerName.haveFood.get(Burger.name) != 0) {
+                        foodInput = "Burger";
+                        exit = true;
+                    }
+                    if (foodInput.equalsIgnoreCase("p") && playerName.haveFood.containsKey(BigPizza.name) && playerName.haveFood.get(BigPizza.name) != 0) {
+                        foodInput = "Big Pizza";
+                        exit = true;
+                    }
+                } while (!exit);
+
+                var kgInput = promptInt("How many Kg do you want to feed your " + hungryAnimal.getClass().getSimpleName(), 1, playerName.haveFood.get(foodInput));
+                playerName.feedAnimal(hungryAnimal, kgInput, foodInput);
+                playerName.haveFood.replace(foodInput, (playerName.haveFood.get(foodInput) - kgInput));
+            }
+
+        } else {
+            System.out.println("You dont have Food in your store yet. Go to BUY FOOD.");
+            roundOptions(playerName);
         }
-        System.out.println("\n---------------------------------------------");
+
+
     }
+
 
     public void mateOptions(Player playerName) {
         System.out.println("=== " + playerName.name.toUpperCase() + " === is playing----------------");
@@ -315,6 +361,8 @@ public class Game {
             System.out.print(" " + "(" + (int) animal.health + "% hp)");
             System.out.print("  (" + animal.gender + ")\n");
         }
+        System.out.println("\n---------------------------------------------");
+
         System.out.println("Animal 1: ");
         var animal1 = scan.next();
         if (animal1.equalsIgnoreCase("e")) {
@@ -333,7 +381,7 @@ public class Game {
                 a = playerName.haveAnimal.get(i);
             }
         }
-        if(a==null) {
+        if (a == null) {
             System.out.println("That name does not exist, Try again");
             mateOptions(playerName);
         }
@@ -342,7 +390,7 @@ public class Game {
                 b = playerName.haveAnimal.get(i);
             }
         }
-        if(b==null) {
+        if (b == null) {
             System.out.println("That name does not exist, Try again");
             mateOptions(playerName);
         }
@@ -363,13 +411,11 @@ public class Game {
                         case "Unicorn" -> playerName.haveAnimal.add(new Unicorn(store.nameToAnimal(), Animal.genderToNewAnimal()));
                     }
                     System.out.println("New animal added to your STORE. Next player´s turn in 3... 2... 1... ");
-                }
-                else {
+                } else {
                     System.out.println("Unlucky :( ... no offspring \nNext player´s turn in 3... 2... 1...");
                 }
                 delay();
-            }
-            else
+            } else
                 mateOptions(playerName);
         }
     }
@@ -395,6 +441,27 @@ public class Game {
         }
     }
 
+    static public void saveSickAnimal(Player playerName) {
+        if (playerName.haveAnimal.size() != 0) {
+            for (Animal animal : playerName.haveAnimal) {
+                animal.animalGetSick();
+                if (animal.sick) {
+                    System.out.println(ANSI_RED + "Unfortunately " + animal.animalName + " is sick. The cost of the veterinary is $" + animal.vetPrice + ANSI_RESET);
+                    var opt = promptInt("Do you want to try to save it? (type 1 for YES or 2 for NO )", 1, 2);
+                    if (opt == 1) {
+                        animal.veterinaryMiracle();
+                        playerName.money -= animal.vetPrice;
+                        clear();
+                    } else {
+                        animal.die();
+                        clear();
+                    }
+                }
+            }
+            removeDeadAnimals(playerName);
+        }
+    }
+
     static public void showAnimals(Player playerName) {
         if (playerName.haveAnimal.size() != 0) {
             System.out.println(ANSI_GREEN + playerName.name.toUpperCase() + "'s ANIMAL STORE" +
@@ -408,9 +475,8 @@ public class Game {
             System.out.print("---------------------------------------------\n" + ANSI_RESET);
             for (Animal animal : playerName.haveAnimal) {
                 animal.checkHealth(animal.health);
+                animal.ageing();
             }
-
-
         } else
             System.out.println(ANSI_GREEN + playerName.name.toUpperCase() + "'s ANIMAL STORE is empty" +
                     "\n---------------------------------------------" + ANSI_RESET);
@@ -450,7 +516,7 @@ public class Game {
                 promptInt(question, min, max) : num;
     }
 
-    public void finalRound(){
+    public void finalRound() {
         System.out.println("THAT WAS THE FINAL ROUND !!!" +
                 " All animals are being sold and he system is working very HARD to find a winner. Be patient");
         delay();
@@ -463,25 +529,25 @@ public class Game {
 
     }
 
-    public  void findWinner(){
-        HashMap<String,Integer> winnersMoney= new HashMap<>();
-        System.out.println("----------------------------------------------\n" +ANSI_GREEN+
-                "===== FINAL RESULT =======  \n==== LIST OF PLAYERS =====" +ANSI_RESET+
+    public void findWinner() {
+        HashMap<String, Integer> winnersMoney = new HashMap<>();
+        System.out.println("----------------------------------------------\n" + ANSI_GREEN +
+                "===== FINAL RESULT =======  \n==== LIST OF PLAYERS =====" + ANSI_RESET +
                 "\n---------------------------------------------");
-        for (Player player:playerList){
-            var sum=0;
-            for (Animal animal: player.haveAnimal){
-                sum+=animal.getCurrentPrice();
+        for (Player player : playerList) {
+            var sum = 0;
+            for (Animal animal : player.haveAnimal) {
+                sum += animal.getCurrentPrice();
             }
-            sum+=player.money;
-            winnersMoney.put(player.name,sum);
+            sum += player.money;
+            winnersMoney.put(player.name, sum);
             delay();
-            System.out.println("-"+player.name.toUpperCase() + "   -    total money : $"+ sum);
+            System.out.println("-" + player.name.toUpperCase() + "   -    total money : $" + sum);
         }
-        int playerWithMoreMoney=Collections.max(winnersMoney.values());
-       // int numOfWinners=0;
-        for(var name:winnersMoney.keySet()){
-            if(winnersMoney.get(name)==playerWithMoreMoney) {
+        int playerWithMoreMoney = Collections.max(winnersMoney.values());
+        // int numOfWinners=0;
+        for (var name : winnersMoney.keySet()) {
+            if (winnersMoney.get(name) == playerWithMoreMoney) {
                 //numOfWinners++;
                 delay();
                 //System.out.println(numOfWinners + " WINNER \n----------------------------------------");

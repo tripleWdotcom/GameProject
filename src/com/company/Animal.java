@@ -1,5 +1,8 @@
 package com.company;
 
+import javax.management.monitor.GaugeMonitor;
+import javax.sound.midi.Soundbank;
+
 public abstract class Animal {
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
@@ -9,17 +12,25 @@ public abstract class Animal {
     public boolean living;
     public Gender gender;
     public int price;
+    public int maxAge;
+    public boolean sick;
+    public int vetPrice;
+    public int initialAge;
 
     enum Gender{
         MALE,
         FEMALE,
     }
-    public Animal(String animalName,String  gender, int price){
+    public Animal(String animalName,String  gender, int price,int vetPrice,int maxAge){
         this.price = price;
         this.health=100;
         this.animalName=animalName;
         this.living=true;
         this.gender= Gender.valueOf(gender.toUpperCase());
+        this.sick=false;
+        this.vetPrice=vetPrice;
+        this.maxAge=maxAge;
+        this.initialAge=1;
 
     }
     public static int randomHealthDecrease(double health) {
@@ -28,10 +39,6 @@ public abstract class Animal {
         health*=(random/100);
         return (int)health;
     }
-    public double getCurrentHealth(){
-        return health;
-    }
-
 
     public static String genderToNewAnimal() {
         var r="";
@@ -54,11 +61,33 @@ public abstract class Animal {
             this.die();
     }
 
+    public void veterinaryMiracle(){
+        System.out.println("This might take a while. It wont be easy. FINGERS CROSSED!!!");
+        Game.delay();
+        System.out.println("The operation is still going...");
+        Game.delay();
+        if (Math.random() >= 0.5){
+            System.out.println(this.animalName + " is saved!!!!");
+        Game.delay();}
+        else {
+            System.out.println("Unfortunately, little "+this.animalName+ " was too sick and could not be saved.");
+            this.die();
+        }
+    }
+    public void ageing(){
+        this.initialAge++;
+        if(this.initialAge>=this.maxAge) {
+            System.out.println(this.animalName+" is too old....");
+            this.die();
+        }
+    }
     public void die(){
         System.out.println(this.animalName.toUpperCase()+" is now dead");
         this.living=false;
+        Game.delay();
     }
 
-
-
+    public void animalGetSick(){
+        this.sick= Math.random() < 0.2;
+    }
 }

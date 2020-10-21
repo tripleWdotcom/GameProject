@@ -10,6 +10,5 @@ public class BigPizza extends Food {
 
     public BigPizza(){
 
-
     }
 }

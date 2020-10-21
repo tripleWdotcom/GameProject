@@ -30,7 +30,7 @@ public abstract class Animal {
         this.sick=false;
         this.vetPrice=vetPrice;
         this.maxAge=maxAge;
-        this.initialAge=1;
+        this.initialAge=0;
 
     }
     public static int randomHealthDecrease(double health) {
@@ -70,7 +70,7 @@ public abstract class Animal {
             System.out.println(this.animalName + " is saved!!!!");
         Game.delay();}
         else {
-            System.out.println("Unfortunately, little "+this.animalName+ " was too sick and could not be saved.");
+            System.out.println("\nUnfortunately, little "+this.animalName+ " was too sick and could not be saved.");
             this.die();
         }
     }
@@ -82,7 +82,7 @@ public abstract class Animal {
         }
     }
     public void die(){
-        System.out.println(this.animalName.toUpperCase()+" is now dead");
+        System.out.println(ANSI_RED+ this.animalName.toUpperCase()+" is now dead"+ANSI_RESET);
         this.living=false;
         Game.delay();
     }

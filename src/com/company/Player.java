@@ -1,5 +1,6 @@
 package com.company;
 
+import java.lang.reflect.GenericArrayType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,11 +48,15 @@ public class Player {
         if(!AnimalToMate2.getClass().equals(animalToMate1.getClass())) {
             System.out.println("Different species. that wont work out.Please select the same species");
             Game.delay();
-            possible=false;
+            Game.clear();
         }
-        if(AnimalToMate2.gender!=animalToMate1.gender){
-           // var newAnimal=animalToMate1.getClass().getSimpleName();
+        if(AnimalToMate2.getClass().equals(animalToMate1.getClass())&&(AnimalToMate2.gender!=animalToMate1.gender)){
             possible=true;
+        }
+        if((AnimalToMate2.getClass().equals(animalToMate1.getClass())&&(AnimalToMate2.gender==animalToMate1.gender))){
+            System.out.println("Pick different genders PLEASE");
+            Game.delay();
+            Game.clear();
         }
         return possible;
     }

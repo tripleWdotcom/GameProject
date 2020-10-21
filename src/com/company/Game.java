@@ -50,6 +50,17 @@ public class Game {
     }
 
     public void roundOptions(Player playerName) {
+        if(playerName.money<1){
+            System.out.println(playerName.name +"has no money...");
+            if(playerName.haveAnimal.size()!=0){
+                System.out.println("you have to sell you animals to get some money");
+                sellOptions(playerName);
+            }else{
+                System.out.println("You have no money and no animals. GAME OVER for you...");
+                delay();
+                return;
+            }
+        }
         System.out.println("You have this amount of money available: $" + playerName.money);
         decreaseAnimalsHealth(playerName);
         removeDeadAnimals(playerName);
@@ -138,6 +149,7 @@ public class Game {
                 } else {
                     System.out.println("Not enough money. You have:" + playerName.money +
                             "  You need: " + Condor.price + " to buy it.");
+                    delay();
                 }
             }
             case 4 -> {
@@ -395,7 +407,7 @@ public class Game {
             mateOptions(playerName);
         }
         if (b != null && a != null) {
-            if (playerName.toMate(a, b)) {
+            if ((playerName.toMate(a, b))) {
                 System.out.println("\nAnimals mating. Be patient...\n ");
                 delay();
                 if (Math.random() >= 0.5) {
@@ -447,12 +459,19 @@ public class Game {
                 animal.animalGetSick();
                 if (animal.sick) {
                     System.out.println(ANSI_RED + "Unfortunately " + animal.animalName + " is sick. The cost of the veterinary is $" + animal.vetPrice + ANSI_RESET);
-                    var opt = promptInt("Do you want to try to save it? (type 1 for YES or 2 for NO )", 1, 2);
-                    if (opt == 1) {
-                        animal.veterinaryMiracle();
-                        playerName.money -= animal.vetPrice;
-                        clear();
-                    } else {
+                    if (playerName.money > animal.vetPrice) {
+                        var opt = promptInt("Do you want to try to save it? (type 1 for YES or 2 for NO )", 1, 2);
+                        if (opt == 1) {
+                            animal.veterinaryMiracle();
+                            playerName.money -= animal.vetPrice;
+                            clear();
+                        } else {
+                            animal.die();
+                            clear();
+                        }
+                    }
+                    else{
+                        System.out.println("You dont have the money to save it...");
                         animal.die();
                         clear();
                     }
@@ -464,6 +483,11 @@ public class Game {
 
     static public void showAnimals(Player playerName) {
         if (playerName.haveAnimal.size() != 0) {
+            for (Animal animal : playerName.haveAnimal) {
+                animal.ageing();
+            }
+            removeDeadAnimals(playerName);
+
             System.out.println(ANSI_GREEN + playerName.name.toUpperCase() + "'s ANIMAL STORE" +
                     "\n---------------------------------------------" + ANSI_RESET);
             for (Animal animal : playerName.haveAnimal) {
@@ -472,8 +496,9 @@ public class Game {
             System.out.print("---------------------------------------------\n" + ANSI_RESET);
             for (Animal animal : playerName.haveAnimal) {
                 animal.checkHealth(animal.health);
-                animal.ageing();
             }
+            removeDeadAnimals(playerName);
+
         } else
             System.out.println(ANSI_GREEN + playerName.name.toUpperCase() + "'s ANIMAL STORE is empty" +
                     "\n---------------------------------------------" + ANSI_RESET);
@@ -515,7 +540,7 @@ public class Game {
 
     public void finalRound() {
         System.out.println("THAT WAS THE FINAL ROUND !!!" +
-                " All animals are being sold and he system is working very HARD to find a winner. Be patient");
+                "The system is working very HARD to find a winner. Be patient");
         delay();
         delay();
         System.out.println("Still counting...");
@@ -534,7 +559,7 @@ public class Game {
         for (Player player : playerList) {
             var sum = 0;
             for (Animal animal : player.haveAnimal) {
-                sum += animal.getCurrentPrice();
+                sum += animal.getCurrentPrice()/animal.initialAge;
             }
             sum += player.money;
             winnersMoney.put(player.name, sum);

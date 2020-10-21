@@ -1,5 +1,7 @@
 package com.company;
 
+import javax.sound.midi.Soundbank;
+import java.sql.SQLOutput;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -11,7 +13,7 @@ public class Game {
     public static final String ANSI_CYAN = "\u001B[36m";
 
     Scanner scan = new Scanner(System.in);
-    ArrayList<Player> playerList = new ArrayList<Player>();
+    ArrayList<Player> playerList = new ArrayList<>();
     Store store = new Store();
     boolean win = false;
 
@@ -32,14 +34,16 @@ public class Game {
 
         var roundCounter = 0;
         while (!win && roundCounter < nRounds) {
-            for (int i = 0; i < playerList.size(); i++) {
+            for (Player player : playerList) {
                 clear();
                 System.out.println(ANSI_CYAN + "ROUND " + (roundCounter + 1) + ANSI_RESET);
-                System.out.println("=== " + ANSI_CYAN + playerList.get(i).name.toUpperCase() + ANSI_RESET + " === is your turn to play----------------");
-                roundOptions(playerList.get(i));
+                System.out.println("=== " + ANSI_CYAN + player.name.toUpperCase() + ANSI_RESET + " === is your turn to play----------------");
+                roundOptions(player);
             }
             roundCounter++;
         }
+        finalRound();
+        findWinner();
 
     }
 
@@ -50,10 +54,15 @@ public class Game {
         removeDeadAnimals(playerName);
         showAnimals(playerName);
         showFood(playerName);
-        System.out.println("Options" +
-                "\n---------------------------------------------" +
-                "\n1: Buy \n2: Sell \n3: Feed \n4: Mate Animals \n5: Do nothing (Skip Round)" +
-                "\n---------------------------------------------");
+        System.out.println("""
+                Options
+                ---------------------------------------------
+                1: Buy\s
+                2: Sell\s
+                3: Feed\s
+                4: Mate Animals\s
+                5: Do nothing (Skip Round)
+                ---------------------------------------------""");
         var opt = promptInt("Choose option number", 1, 5);
         System.out.println("Option " + opt + " was selected \nProcessing...");
         clear();
@@ -63,17 +72,20 @@ public class Game {
             case 3 -> feedOptions(playerName);
             case 4 -> mateOptions(playerName);
         }
-        if (opt == 5)
+        if (opt == 5) {
             return;
+        }
     }
 
     public void buyOptions(Player playerName) {
         System.out.println("=== " + playerName.name + " === is playing----------------");
 
-        System.out.println("Options" +
-                "\n---------------------------------------------" +
-                "\n1: Buy Animal \n2: Buy food" +
-                "\n---------------------------------------------");
+        System.out.println("""
+                Options
+                ---------------------------------------------
+                1: Buy Animal\s
+                2: Buy food
+                ---------------------------------------------""");
         int opt = promptInt("Type Option: ", 1, 3);
         System.out.println("Option " + opt + " was selected \nProcessing...");
         //delay();
@@ -289,7 +301,6 @@ public class Game {
             System.out.print(" " + " '" + animal.animalName.toUpperCase() + "' ");
             System.out.print(" " + "(" + (int) animal.health + "% hp)");
         }
-        var opt = scan.nextLine();
         System.out.println("\n---------------------------------------------");
     }
 
@@ -365,9 +376,8 @@ public class Game {
 
 
     static public void clear() {
-        System.out.println("\n".repeat(50));
+        System.out.println("\n".repeat(40));
     }
-
 
     static public void delay() {
         try {
@@ -438,6 +448,49 @@ public class Game {
         }
         return num < min || num > max ?
                 promptInt(question, min, max) : num;
+    }
+
+    public void finalRound(){
+        System.out.println("THAT WAS THE FINAL ROUND !!!" +
+                " All animals are being sold and he system is working very HARD to find a winner. Be patient");
+        delay();
+        delay();
+        System.out.println("Still counting...");
+        delay();
+        System.out.println("Almost there...");
+        delay();
+        clear();
+
+    }
+
+    public  void findWinner(){
+        HashMap<String,Integer> winnersMoney= new HashMap<>();
+        System.out.println("----------------------------------------------\n" +ANSI_GREEN+
+                "===== FINAL RESULT =======  \n==== LIST OF PLAYERS =====" +ANSI_RESET+
+                "\n---------------------------------------------");
+        for (Player player:playerList){
+            var sum=0;
+            for (Animal animal: player.haveAnimal){
+                sum+=animal.getCurrentPrice();
+            }
+            sum+=player.money;
+            winnersMoney.put(player.name,sum);
+            delay();
+            System.out.println("-"+player.name.toUpperCase() + "   -    total money : $"+ sum);
+        }
+        int playerWithMoreMoney=Collections.max(winnersMoney.values());
+       // int numOfWinners=0;
+        for(var name:winnersMoney.keySet()){
+            if(winnersMoney.get(name)==playerWithMoreMoney) {
+                //numOfWinners++;
+                delay();
+                //System.out.println(numOfWinners + " WINNER \n----------------------------------------");
+                System.out.println("----------------------------------------------------");
+                System.out.println(ANSI_GREEN + "The winner is : " + ANSI_RESET + ANSI_BLUE + name +
+                        ANSI_RESET + ANSI_GREEN + " !!! with an amount of: $" + winnersMoney.get(name) + ANSI_RESET);
+            }
+        }
+
     }
 
 }

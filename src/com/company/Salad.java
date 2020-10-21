@@ -9,7 +9,6 @@ public class Salad extends Food {
 
 
     public Salad(){
-        //this.weight=1;
 
     }
 

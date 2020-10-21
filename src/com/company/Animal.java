@@ -28,6 +28,10 @@ public abstract class Animal {
         health*=(random/100);
         return (int)health;
     }
+    public double getCurrentHealth(){
+        return health;
+    }
+
 
     public static String genderToNewAnimal() {
         var r="";

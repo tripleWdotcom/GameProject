@@ -15,8 +15,9 @@ public class Player {
         this.money= 10000;
 
     }
-    public  void feedAnimal(Animal animalToFeed){
-        //animalToFeed.health+=;
+    public  void feedAnimal(Animal animalToFeed,int kg, String feedingFood){
+        animalToFeed.health+=kg*animalToFeed.getCurrentHealth();
+        haveFood.keySet();
 
     }
     public  boolean toMate(Animal animalToMate1, Animal AnimalToMate2){
@@ -31,10 +32,5 @@ public class Player {
             possible=true;
         }
         return possible;
-
     }
-
-
-
-
 }

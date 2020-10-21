@@ -9,8 +9,6 @@ public class BigPizza extends Food {
 
 
     public BigPizza(){
-        //this.weight=3;
-        //this.pricePerK=40;
 
 
     }

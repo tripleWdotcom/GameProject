@@ -467,10 +467,7 @@ public class Game {
             System.out.println(ANSI_GREEN + playerName.name.toUpperCase() + "'s ANIMAL STORE" +
                     "\n---------------------------------------------" + ANSI_RESET);
             for (Animal animal : playerName.haveAnimal) {
-                System.out.print(ANSI_GREEN + "-" + animal.getClass().getSimpleName());
-                System.out.print(" " + " '" + animal.animalName.toUpperCase() + "' ");
-                System.out.print(" " + "(" + (int) animal.health + "% hp)");
-                System.out.print("  (" + animal.gender + ")\n");
+                System.out.print(ANSI_GREEN + "-" + animal.getClass().getSimpleName() + "  '"+ animal.animalName.toUpperCase() +"'  "+animal.initialAge+" year(s) old  "+ " (" + (int) animal.health + "% hp)"+"  (" + animal.gender + ")\n");
             }
             System.out.print("---------------------------------------------\n" + ANSI_RESET);
             for (Animal animal : playerName.haveAnimal) {

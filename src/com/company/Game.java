@@ -137,6 +137,7 @@ public class Game {
                 } else {
                     System.out.println("Not enough money. You have:" + playerName.money +
                             "  You need: " + Crocodile.price + " to buy it.");
+                    delay();
                 }
             }
             case 3 -> {
@@ -156,6 +157,7 @@ public class Game {
                 } else {
                     System.out.println("Not enough money. You have:" + playerName.money +
                             "  You need: " + Unicorn.price + " to buy it.");
+                    delay();
                 }
             }
             case 5 -> {
@@ -165,6 +167,7 @@ public class Game {
                 } else {
                     System.out.println("Not enough money. You have:" + playerName.money +
                             "  You need: " + Rabbit.price + " to buy it.");
+                    delay();
                 }
             }
         }
@@ -279,7 +282,7 @@ public class Game {
     }
 
     public void sellOptions(Player playerName) {
-        if(playerName.haveAnimal.size()!=0){
+        if (playerName.haveAnimal.size() != 0) {
             System.out.println("=== " + playerName.name.toUpperCase() + " === is playing----------------");
             System.out.println("List of Animals you can sell back to the STORE (press 'E' to Exit)" +
                     "\n---------------------------------------------");
@@ -298,12 +301,17 @@ public class Game {
             for (int i = 0; i < playerName.haveAnimal.size(); i++) {
                 if (playerName.haveAnimal.get(i).animalName.equalsIgnoreCase(opt)) {
                     playerName.money += playerName.haveAnimal.get(i).getCurrentPrice();
-                    System.out.println("'" + opt.toUpperCase() + "'" + " Sold for : $" +playerName.haveAnimal.get(i).getCurrentPrice());
+                    System.out.println("'" + opt.toUpperCase() + "'" + " Sold for : $" + playerName.haveAnimal.get(i).getCurrentPrice());
                     delay();
                     clear();
                     playerName.haveAnimal.remove(i);
                     exists = true;
                 }
+            }
+            if (playerName.haveAnimal.size() == 0) {
+                System.out.println("No more animals to sell...");
+                delay();
+                return;
             }
             if (opt.equalsIgnoreCase("e"))
                 return;
@@ -313,8 +321,7 @@ public class Game {
                 clear();
             }
             sellOptions(playerName);
-        }
-        else{
+        } else {
             System.out.println("You dont have animals. Buy some animals first !!");
             delay();
             clear();
@@ -377,12 +384,12 @@ public class Game {
                 } while (!exit);
 
                 var kgInput = promptInt("How many Kg do you want to feed your " + hungryAnimal.getClass().getSimpleName(), 1, playerName.haveFood.get(foodInput));
-                if(playerName.feedAnimal(hungryAnimal, kgInput, foodInput)) {
+                if (playerName.feedAnimal(hungryAnimal, kgInput, foodInput)) {
                     playerName.haveFood.replace(foodInput, (playerName.haveFood.get(foodInput) - kgInput));
-                    System.out.println(hungryAnimal.getClass().getSimpleName()+ "  "+ animalToFeed.toUpperCase()+ "is eating its " + foodInput + "..." );
+                    System.out.println(hungryAnimal.getClass().getSimpleName() + "  " + animalToFeed.toUpperCase() + "is eating its " + foodInput + "...");
                     delay();
                     clear();
-                }else{
+                } else {
                     System.out.println("Choose the CORRECT FOOD for the ANIMAL");
                     delay();
                     clear();
@@ -491,12 +498,14 @@ public class Game {
             e.printStackTrace();
         }
     }
+
     static public void shortDelay() {
         try {
             TimeUnit.MILLISECONDS.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }}
+        }
+    }
 
     static public void decreaseAnimalsHealth(Player playerName) {
         if (playerName.haveAnimal.size() != 0) {
@@ -512,7 +521,7 @@ public class Game {
                 animal.animalGetSick();
                 if (animal.sick) {
                     clear();
-                    System.out.println(ANSI_RED +"OH NO !! I am sorry "+playerName.name.toUpperCase()+  ", before going to the next round you need to make an important decision. Unfortunately " + "'" + animal.animalName + "'" + " is sick. The cost of the veterinary is $" + animal.vetPrice + ANSI_RESET);
+                    System.out.println(ANSI_RED + "OH NO !! I am sorry " + playerName.name.toUpperCase() + ", before going to the next round you need to make an important decision. Unfortunately " + "'" + animal.animalName + "'" + " is sick. The cost of the veterinary is $" + animal.vetPrice + ANSI_RESET);
                     if (playerName.money > animal.vetPrice) {
                         var opt = promptInt("Do you want to try to save it? (type 1 for YES or 2 for NO )", 1, 2);
                         if (opt == 1) {
@@ -596,7 +605,6 @@ public class Game {
         System.out.println("THAT WAS THE FINAL ROUND !!!" +
                 "The system is working very HARD to find a winner. Be patient");
         delay();
-        delay();
         System.out.println("Still working...");
         delay();
         System.out.println("Almost there...");
@@ -607,6 +615,23 @@ public class Game {
 
     public void findWinner() {
         HashMap<String, Integer> winnersMoney = new HashMap<>();
+        System.out.print("""
+                    |@@@@|     |####|
+                    |@@@@|     |####|
+                    |@@@@|     |####|
+                    \\@@@@|     |####/
+                     \\@@@|     |###/
+                      `@@|_____|##'
+                           (O)
+                        .-'''''-.
+                      .'  * * *  `.
+                     :  *       *  :
+                    : ~  G A M E  ~ :
+                    :  W I N N E R  :
+                     :  *       *  :
+                      `.  * * *  .'
+                        `-.....-'
+                """);
         System.out.println("----------------------------------------------\n" + ANSI_GREEN +
                 "===== FINAL RESULT =======  \n==== LIST OF PLAYERS =====" + ANSI_RESET +
                 "\n---------------------------------------------");

@@ -2,7 +2,7 @@ package com.company;
 
 public class Condor extends Animal {
     public static int price = 1300;
-    public static int vetPrice = 650;
+    public static int vetPrice = price/2;
     public static int maxAge = 20;
 
 

@@ -1,14 +1,12 @@
 package com.company;
 
-import javax.management.monitor.GaugeMonitor;
-import javax.sound.midi.Soundbank;
 
 public abstract class Animal {
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
 
     public String animalName;
-    public double health;
+    public int health;
     public boolean living;
     public Gender gender;
     public int price;
@@ -31,15 +29,15 @@ public abstract class Animal {
         this.sick = false;
         this.vetPrice = vetPrice;
         this.maxAge = maxAge;
-        this.initialAge = 0;
+        this.initialAge = 1;
 
     }
 
-    public static int randomHealthDecrease(double health) {
-        double random = (int) (Math.random() * 20) + 11;
+    public static int randomHealthDecrease(int health) {
+        double random = (Math.random() * 20) + 11;
         random = 100 - random;
         health *= (random / 100);
-        return (int) health;
+        return health;
     }
 
     public static String genderToNewAnimal() {
@@ -51,8 +49,8 @@ public abstract class Animal {
         return r;
     }
 
-    public double getCurrentPrice() {
-        return price * health / 100.0;
+    public int getCurrentPrice() {
+        return price * health / 100;
     }
 
 
@@ -62,13 +60,12 @@ public abstract class Animal {
         if ((int) health == 0)
             this.die();
     }
-
     public void veterinaryMiracle() {
         System.out.println("This might take a while. It wont be easy. FINGERS CROSSED!!!");
         Game.delay();
         System.out.println("The operation is still going...");
         Game.delay();
-        if (Math.random() >= 0.5) {
+        if (Math.random() < 0.7) { //changed to 70%. 50% was too low.
             System.out.println("'" + this.animalName.toUpperCase() + "'" + " is saved!!!!");
             Game.delay();
         } else {
@@ -92,6 +89,7 @@ public abstract class Animal {
     }
 
     public void animalGetSick() {
-        this.sick = Math.random() < 0.2;
-    }
+        if(Math.random() < 0.1)
+            this.sick = true;
+    } // changed to 10%. 20% was too high.
 }

@@ -1,7 +1,6 @@
 package com.company;
 
 public class Salad extends Food {
-    int weight;
     static int pricePerK=40;
     public static String name="Salad";
     static int quantity;
@@ -9,7 +8,6 @@ public class Salad extends Food {
 
 
     public Salad(){
-
     }
 
 }

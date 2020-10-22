@@ -2,8 +2,8 @@ package com.company;
 
 public class Unicorn extends Animal {
     public static int price = 1800;
-    public static int vetPrice = 900;
-    public static int maxAge = 30;
+    public static int vetPrice = price/2;
+    public static int maxAge = 20;
 
 
 

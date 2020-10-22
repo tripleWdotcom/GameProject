@@ -1,8 +1,6 @@
 package com.company;
 
-import java.lang.reflect.GenericArrayType;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 public class Player {
@@ -16,30 +14,39 @@ public class Player {
         this.money= 10000;
 
     }
-    public  void feedAnimal(Animal animalToFeed,double kg, String feedingFood){
+    public  boolean feedAnimal(Animal animalToFeed,double kg, String feedingFood){
+        var correctFood=false;
         if(animalToFeed instanceof Dog)
             switch (feedingFood){
-                case "Big Pizza", "Burger" ->animalToFeed.health+=kg*10;
+                case "Big Pizza", "Burger" ->{animalToFeed.health+=kg*10;
+                    correctFood=true;
+                }
             }
         if(animalToFeed instanceof Crocodile)
             if(feedingFood.equalsIgnoreCase("Burger")){
                 animalToFeed.health+=kg*5;
+                correctFood=true;
+
             }
         if(animalToFeed instanceof Condor)
             switch (feedingFood){
-                case "Burger","Salad" ->animalToFeed.health+=kg*5;
+                case "Burger","Salad" ->{animalToFeed.health+=kg*5;
+                    correctFood=true;
+                }
             }
         if(animalToFeed instanceof Unicorn)
             if(feedingFood.equalsIgnoreCase("Big Pizza")){
                 animalToFeed.health+=kg*15;
+                correctFood=true;
             }
         if(animalToFeed instanceof Rabbit)
             if(feedingFood.equalsIgnoreCase("Salad")) {
                 animalToFeed.health += kg * 20;
-
+                correctFood=true;
             }
         if(animalToFeed.health>100)
-            animalToFeed.health=125;
+            animalToFeed.health=125; // it gives close to 100% (animals lose 10-30% each round)
+        return correctFood;
     }
 
 

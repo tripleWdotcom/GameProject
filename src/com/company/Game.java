@@ -1,7 +1,5 @@
 package com.company;
 
-import javax.sound.midi.Soundbank;
-import java.sql.SQLOutput;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -69,7 +67,7 @@ public class Game {
         System.out.println("""
                 Options
                 ---------------------------------------------
-                1: Buy Animals\s
+                1: Buy \s
                 2: Sell Animals\s
                 3: Feed Animals\s
                 4: Mate Animals\s
@@ -129,6 +127,7 @@ public class Game {
                 } else {
                     System.out.println("Not enough money. You have:" + playerName.money +
                             "  You need: " + Dog.price + " to buy it.");
+                    delay();
                 }
             }
             case 2 -> {
@@ -180,8 +179,8 @@ public class Game {
         System.out.println("You have this amount of money available: $" + playerName.money);
         System.out.println("Food List" +
                 "\n---------------------------------------------" +
-                "\n1: Big Pizza  " + BigPizza.pricePerK + "\n2: Burger " + Burger.pricePerK +
-                " \n3: Salad  " + Salad.pricePerK + " \n4: Stop Buying Food" +
+                "\n1: Big Pizza  $" + BigPizza.pricePerK + "\n2: Burger $" + Burger.pricePerK +
+                " \n3: Salad  $" + Salad.pricePerK + " \n4: Stop Buying Food" +
                 "\n---------------------------------------------");
         int opt = promptInt("Choose Option number: ", 1, 4);
         System.out.println("Option " + opt + " was selected.");
@@ -207,7 +206,6 @@ public class Game {
                     } else {
                         System.out.println(ANSI_RED + "NOT ENOUGH MONEY FOR THAT QUANTITY" + ANSI_RESET);
                         delay();
-                        buyFoodOptions(playerName);
                     }
 
                 } else {
@@ -237,7 +235,6 @@ public class Game {
                     } else {
                         System.out.println(ANSI_RED + "NOT ENOUGH MONEY FOR THAT QUANTITY" + ANSI_RESET);
                         delay();
-                        buyFoodOptions(playerName);
                     }
                 } else {
                     System.out.println("Not enough money. You have:" + playerName.money +
@@ -266,7 +263,6 @@ public class Game {
                     } else {
                         System.out.println(ANSI_RED + "NOT ENOUGH MONEY FOR THAT QUANTITY" + ANSI_RESET);
                         delay();
-                        buyFoodOptions(playerName);
                     }
                 } else {
                     System.out.println("Not enough money. You have:" + playerName.money +
@@ -283,56 +279,72 @@ public class Game {
     }
 
     public void sellOptions(Player playerName) {
-        System.out.println("=== " + playerName.name.toUpperCase() + " === is playing----------------");
-        System.out.println("List of Animals you can sell back to the STORE (press 'E' to Exit)" +
-                "\n---------------------------------------------");
+        if(playerName.haveAnimal.size()!=0){
+            System.out.println("=== " + playerName.name.toUpperCase() + " === is playing----------------");
+            System.out.println("List of Animals you can sell back to the STORE (press 'E' to Exit)" +
+                    "\n---------------------------------------------");
 
-        for (Animal animal : playerName.haveAnimal) {
-            System.out.print("-" + animal.getClass().getSimpleName());
-            System.out.print(" " + " '" + animal.animalName.toUpperCase() + "' ");
-            System.out.print(" " + "(" + (int) animal.health + "% hp)");
-            System.out.print("  (" + animal.gender + ")" + ANSI_CYAN + "- you get from the store: $" +
-                    (int) animal.getCurrentPrice() + ANSI_RESET + "\n");
-        }
-        System.out.println("---------------------------------------------");
-        System.out.println("Write the name of the Animal: ");
-        var opt = scan.next();
-        var exists = false;
-        for (int i = 0; i < playerName.haveAnimal.size(); i++) {
-            if (playerName.haveAnimal.get(i).animalName.equalsIgnoreCase(opt)) {
-                playerName.money += playerName.haveAnimal.get(i).getCurrentPrice();
-                System.out.println("'" + opt.toUpperCase() + "'" + " Sold for : $" + (int) playerName.haveAnimal.get(i).getCurrentPrice());
+            for (Animal animal : playerName.haveAnimal) {
+                System.out.print("-" + animal.getClass().getSimpleName());
+                System.out.print(" " + " '" + animal.animalName.toUpperCase() + "' ");
+                System.out.print(" " + "(" + animal.health + "% hp)");
+                System.out.print("  (" + animal.gender + ")" + ANSI_CYAN + "- you get from the store: $" +
+                        animal.getCurrentPrice() + ANSI_RESET + "\n");
+            }
+            System.out.println("---------------------------------------------");
+            System.out.println("Write the name of the Animal: ");
+            var opt = scan.next();
+            var exists = false;
+            for (int i = 0; i < playerName.haveAnimal.size(); i++) {
+                if (playerName.haveAnimal.get(i).animalName.equalsIgnoreCase(opt)) {
+                    playerName.money += playerName.haveAnimal.get(i).getCurrentPrice();
+                    System.out.println("'" + opt.toUpperCase() + "'" + " Sold for : $" +playerName.haveAnimal.get(i).getCurrentPrice());
+                    delay();
+                    clear();
+                    playerName.haveAnimal.remove(i);
+                    exists = true;
+                }
+            }
+            if (opt.equalsIgnoreCase("e"))
+                return;
+            if (!exists) {
+                System.out.println("That name does not exist");
                 delay();
                 clear();
-                playerName.haveAnimal.remove(i);
-                exists = true;
             }
+            sellOptions(playerName);
         }
-        if (opt.equalsIgnoreCase("e"))
-            return;
-        if (!exists) {
-            System.out.println("That name does not exist");
+        else{
+            System.out.println("You dont have animals. Buy some animals first !!");
             delay();
             clear();
+            roundOptions(playerName);
         }
-        sellOptions(playerName);
-
     }
 
     public void feedOptions(Player playerName) {
         if (playerName.haveFood.size() != 0) {
-            System.out.println("Write the name of the animal you want to feed" +
+            System.out.println("Write the name of the animal you want to feed (Type 'E' for Exit)" +
                     "\n---------------------------------------------");
+            System.out.print("""
+                    PIZZA ONLY for Dogs and Unicorns
+                    BURGER ONLY for Crocodiles, Condors and Dogs
+                    SALAD ONLY for Rabbits and Condors
+                    -----------------------------------------------""");
+
             for (Animal animal : playerName.haveAnimal) {
-                System.out.print("-" + animal.getClass().getSimpleName());
+                System.out.print("\n-" + animal.getClass().getSimpleName());
                 System.out.print(" " + " '" + animal.animalName.toUpperCase() + "' ");
-                System.out.print(" " + "(" + (int) animal.health + "% hp)");
+                System.out.print(" " + "(" + animal.health + "% hp)");
             }
             System.out.println("\n---------------------------------------------");
             System.out.println("Animal to feed: ");
             var animalToFeed = scan.next();
             if (animalToFeed.equalsIgnoreCase("e")) {
+                System.out.println("Exiting...");
+                shortDelay();
                 return;
+
             }
             Animal hungryAnimal = null;
             for (int i = 0; i < playerName.haveAnimal.size(); i++) {
@@ -365,12 +377,23 @@ public class Game {
                 } while (!exit);
 
                 var kgInput = promptInt("How many Kg do you want to feed your " + hungryAnimal.getClass().getSimpleName(), 1, playerName.haveFood.get(foodInput));
-                playerName.feedAnimal(hungryAnimal, kgInput, foodInput);
-                playerName.haveFood.replace(foodInput, (playerName.haveFood.get(foodInput) - kgInput));
+                if(playerName.feedAnimal(hungryAnimal, kgInput, foodInput)) {
+                    playerName.haveFood.replace(foodInput, (playerName.haveFood.get(foodInput) - kgInput));
+                    System.out.println(hungryAnimal.getClass().getSimpleName()+ "  "+ animalToFeed.toUpperCase()+ "is eating its " + foodInput + "..." );
+                    delay();
+                    clear();
+                }else{
+                    System.out.println("Choose the CORRECT FOOD for the ANIMAL");
+                    delay();
+                    clear();
+                    feedOptions(playerName);
+                }
             }
 
         } else {
             System.out.println("You dont have Food in your store yet. Go to BUY FOOD.");
+            delay();
+            clear();
             roundOptions(playerName);
         }
 
@@ -387,7 +410,7 @@ public class Game {
             for (Animal animal : playerName.haveAnimal) {
                 System.out.print("-" + animal.getClass().getSimpleName());
                 System.out.print(" " + " '" + animal.animalName.toUpperCase() + "' ");
-                System.out.print(" " + "(" + (int) animal.health + "% hp)");
+                System.out.print(" " + "(" + animal.health + "% hp)");
                 System.out.print("  (" + animal.gender + ")\n");
             }
             System.out.println("---------------------------------------------");
@@ -468,6 +491,12 @@ public class Game {
             e.printStackTrace();
         }
     }
+    static public void shortDelay() {
+        try {
+            TimeUnit.MILLISECONDS.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }}
 
     static public void decreaseAnimalsHealth(Player playerName) {
         if (playerName.haveAnimal.size() != 0) {
@@ -483,17 +512,16 @@ public class Game {
                 animal.animalGetSick();
                 if (animal.sick) {
                     clear();
-                    System.out.println(ANSI_RED + "OH NO !!! Unfortunately " + "'" + animal.animalName + "'" + " is sick. The cost of the veterinary is $" + animal.vetPrice + ANSI_RESET);
+                    System.out.println(ANSI_RED +"OH NO !! I am sorry "+playerName.name.toUpperCase()+  ", before going to the next round you need to make an important decision. Unfortunately " + "'" + animal.animalName + "'" + " is sick. The cost of the veterinary is $" + animal.vetPrice + ANSI_RESET);
                     if (playerName.money > animal.vetPrice) {
                         var opt = promptInt("Do you want to try to save it? (type 1 for YES or 2 for NO )", 1, 2);
                         if (opt == 1) {
                             animal.veterinaryMiracle();
                             playerName.money -= animal.vetPrice;
-                            clear();
                         } else {
                             animal.die();
-                            clear();
                         }
+                        clear();
                     } else {
                         System.out.println("You dont have the money to save it...");
                         delay();
@@ -508,19 +536,20 @@ public class Game {
 
     static public void showAnimals(Player playerName) {
         if (playerName.haveAnimal.size() != 0) {
-            for (Animal animal : playerName.haveAnimal) {
-                animal.ageing();
-            }
-            removeDeadAnimals(playerName);
 
             System.out.println(ANSI_GREEN + playerName.name.toUpperCase() + "'s ANIMAL STORE" +
                     "\n---------------------------------------------" + ANSI_RESET);
             for (Animal animal : playerName.haveAnimal) {
-                System.out.print(ANSI_GREEN + "-" + animal.getClass().getSimpleName() + "  '" + animal.animalName.toUpperCase() + "'  " + animal.initialAge + " year(s) old  " + " (" + (int) animal.health + "% hp)" + "  (" + animal.gender + ")\n");
+                System.out.print(ANSI_GREEN + "-" + animal.getClass().getSimpleName() + "  '" + animal.animalName.toUpperCase() + "'  " + animal.initialAge + " year(s) old  " + " (" + animal.health + "% hp)" + "  (" + animal.gender + ")\n");
             }
             System.out.print("---------------------------------------------\n" + ANSI_RESET);
             for (Animal animal : playerName.haveAnimal) {
                 animal.checkHealth(animal.health);
+            }
+            removeDeadAnimals(playerName);
+
+            for (Animal animal : playerName.haveAnimal) {
+                animal.ageing();
             }
             removeDeadAnimals(playerName);
 
@@ -588,16 +617,13 @@ public class Game {
             }
             sum += player.money;
             winnersMoney.put(player.name, sum);
-            delay();
+            shortDelay();
             System.out.println("-" + player.name.toUpperCase() + "   -    total money : $" + sum);
         }
         int playerWithMoreMoney = Collections.max(winnersMoney.values());
-        // int numOfWinners=0;
         for (var name : winnersMoney.keySet()) {
             if (winnersMoney.get(name) == playerWithMoreMoney) {
-                //numOfWinners++;
                 delay();
-                //System.out.println(numOfWinners + " WINNER \n----------------------------------------");
                 System.out.println("----------------------------------------------------");
                 System.out.println(ANSI_GREEN + "The winner is : " + ANSI_RESET + ANSI_BLUE + name.toUpperCase() +
                         ANSI_RESET + ANSI_GREEN + " !!! with an amount of: $" + winnersMoney.get(name) + ANSI_RESET);

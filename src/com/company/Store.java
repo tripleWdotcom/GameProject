@@ -1,8 +1,6 @@
 package com.company;
 
-import javax.naming.MalformedLinkException;
 import java.util.Scanner;
-import java.util.function.BiFunction;
 
 public class Store {
     Scanner scan = new Scanner(System.in);
@@ -39,27 +37,8 @@ public class Store {
         }
         return chosenGender;
     }
-    public Animal createAnimal(int opt) {
-        Animal animalToCreate = null;
-        switch (opt) {
-            case 1 -> animalToCreate = new Dog(nameToAnimal(), genderToAnimal());
-            case 2 -> animalToCreate = new Crocodile(nameToAnimal(), genderToAnimal());
-            case 3 -> animalToCreate = new Condor(nameToAnimal(), genderToAnimal());
-            case 4 -> animalToCreate = new Unicorn(nameToAnimal(), genderToAnimal());
-            case 5 -> animalToCreate = new Rabbit(nameToAnimal(), genderToAnimal());
-        }
-        return animalToCreate;
-    }
 
-    //public Food buyFood(Player PlayerName, int opt) {
-      //  Food foodToReturn = null;
-        //switch (opt) {
-          //  case 1 -> foodToReturn = new BigPizza();
-            //case 2 -> foodToReturn = new Burger();
-            //case 3 -> foodToReturn = new Salad();
-        //}
-        //return foodToReturn;
-   // }
+
 
 
 }

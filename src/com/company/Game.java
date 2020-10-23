@@ -31,7 +31,7 @@ public class Game {
         int nPlayers = promptInt("How many players? (1-4)", 1, 4);
         for (int i = 0; i < nPlayers; i++) {
             System.out.printf("Type Name of Player %d : ", i + 1);
-            var name = scan.next();
+            var name = scan.nextLine();
             playerList.add(new Player(name));
             System.out.printf(ANSI_CYAN+ playerList.get(i).name.toUpperCase() +ANSI_RESET+ " - will be Player %d.%n", i + 1);
         }
@@ -311,7 +311,7 @@ public class Game {
             }
             System.out.println("---------------------------------------------");
             System.out.println("Write the name of the Animal: ");
-            var opt = scan.next();
+            var opt = scan.nextLine();
             var exists = false;
             for (int i = 0; i < playerName.haveAnimal.size(); i++) {
                 if (playerName.haveAnimal.get(i).animalName.equalsIgnoreCase(opt)) {
@@ -332,7 +332,7 @@ public class Game {
                 return;
             if (!exists) {
                 System.out.println("That name does not exist");
-                delay();
+                shortDelay();
                 clear();
             }
             sellOptions(playerName);
@@ -346,7 +346,7 @@ public class Game {
 
     public void feedOptions(Player playerName) {
         if (playerName.haveFood.size() != 0) {
-            System.out.println("Write the name of the animal you want to feed (Type 'E' for Exit)" +
+            System.out.println("Write the name of the animal you want to feed "+ANSI_YELLOW+"(Type 'E' for Exit)"+ANSI_RESET +
                     "\n---------------------------------------------");
             System.out.print(ANSI_YELLOW+ """
                     PIZZA ONLY for Dogs and Unicorns
@@ -360,8 +360,8 @@ public class Game {
                 System.out.print(" " + "(" + animal.health + "% hp)");
             }
             System.out.println("\n---------------------------------------------");
-            System.out.println("Animal to feed: ");
-            var animalToFeed = scan.next();
+            System.out.print("Animal to feed: ");
+            var animalToFeed = scan.nextLine();
             if (animalToFeed.equalsIgnoreCase("e")) {
                 System.out.println("Exiting...");
                 shortDelay();
@@ -376,6 +376,8 @@ public class Game {
             }
             if (hungryAnimal == null) {
                 System.out.println("That name does not exist, Try again");
+                shortDelay();
+                clear();
                 feedOptions(playerName);
             } else {
                 showFood(playerName);
@@ -398,10 +400,10 @@ public class Game {
                     }
                 } while (!exit);
 
-                var kgInput = promptInt("How many Kg do you want to feed your " + hungryAnimal.getClass().getSimpleName(), 1, playerName.haveFood.get(foodInput));
+                var kgInput = promptInt("How many Kg do you want to FEED your " + hungryAnimal.getClass().getSimpleName(), 1, playerName.haveFood.get(foodInput));
                 if (playerName.feedAnimal(hungryAnimal, kgInput, foodInput)) {
                     playerName.haveFood.replace(foodInput, (playerName.haveFood.get(foodInput) - kgInput));
-                    System.out.println(hungryAnimal.getClass().getSimpleName() + " " + animalToFeed.toUpperCase() + " is eating its " + foodInput + "...");
+                    System.out.println(hungryAnimal.getClass().getSimpleName() + " '" + animalToFeed.toUpperCase() + "' is eating its " + foodInput + "...");
                     delay();
                     clear();
                 } else {
@@ -426,7 +428,7 @@ public class Game {
     public void mateOptions(Player playerName) {
         if (playerName.haveAnimal.size() != 0) {
             System.out.println(ANSI_CYAN+ "=== " + playerName.name.toUpperCase() +" === "+ANSI_RESET+ "is playing----------------");
-            System.out.println("Write the name of the Animals you want to mate (press 'E' to Exit)" +
+            System.out.println("Write the name of the animal you want to MATE "+ANSI_YELLOW+"(Type 'E' for Exit)"+ANSI_RESET +
                     "\n---------------------------------------------");
 
             for (Animal animal : playerName.haveAnimal) {
@@ -438,14 +440,14 @@ public class Game {
             System.out.println("---------------------------------------------");
 
             System.out.println("Animal 1: ");
-            var animal1 = scan.next();
+            var animal1 = scan.nextLine();
             if (animal1.equalsIgnoreCase("e")) {
                 System.out.println("Exiting...");
                 delay();
                 return;
             } else if (!animal1.equalsIgnoreCase("e")) {
                 System.out.println("Animal 2: ");
-                var animal2 = scan.next();
+                var animal2 = scan.nextLine();
                 if (animal2.equalsIgnoreCase("e")) {
                     System.out.println("Exiting...");
                     delay();

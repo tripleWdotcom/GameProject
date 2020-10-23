@@ -22,7 +22,7 @@ public class Store {
                 ===Put a name to your new animal===
                 ---------------------------------------------
                 Name:\s""");
-        var nameToAnimal = scan.next();
+        var nameToAnimal = scan.nextLine();
         System.out.print("---------------------------------------------\n");
 
         return nameToAnimal;

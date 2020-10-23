@@ -50,17 +50,23 @@ public class Player {
     }
 
 
-    public  boolean toMate(Animal animalToMate1, Animal AnimalToMate2){
+    public  boolean toMate(Animal animalToMate1, Animal animalToMate2){
         var possible=false;
-        if(!AnimalToMate2.getClass().equals(animalToMate1.getClass())) {
+        if(!animalToMate2.getClass().equals(animalToMate1.getClass())) {
             System.out.println("Different species. that wont work out.Please select the same species");
             Game.delay();
             Game.clear();
         }
-        if(AnimalToMate2.getClass().equals(animalToMate1.getClass())&&(AnimalToMate2.gender!=animalToMate1.gender)){
-            possible=true;
+        if(animalToMate2.getClass().equals(animalToMate1.getClass())&&(animalToMate2.gender!=animalToMate1.gender)){
+            if(animalToMate2.initialAge>3 && animalToMate1.initialAge>3)
+                possible=true;
+            else{
+                System.out.println("Animals too YOUNG to mate. Wait 1-2 years");
+                Game.delay();
+                Game.clear();
+            }
         }
-        if((AnimalToMate2.getClass().equals(animalToMate1.getClass())&&(AnimalToMate2.gender==animalToMate1.gender))){
+        if((animalToMate2.getClass().equals(animalToMate1.getClass())&&(animalToMate2.gender==animalToMate1.gender))){
             System.out.println("Pick different genders PLEASE");
             Game.delay();
             Game.clear();

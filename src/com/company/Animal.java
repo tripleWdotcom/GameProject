@@ -85,7 +85,7 @@ public abstract class Animal {
     }
 
     public void die() {
-        System.out.println(ANSI_RED + this.animalName.toUpperCase() + " is now dead" + ANSI_RESET);
+        System.out.println(ANSI_RED + "'"+this.animalName.toUpperCase() + "' is now dead" + ANSI_RESET);
         this.living = false;
         Game.delay();
     }

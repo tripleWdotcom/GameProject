@@ -4,6 +4,8 @@ package com.company;
 public abstract class Animal {
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+
 
     public String animalName;
     public int health;
@@ -66,7 +68,7 @@ public abstract class Animal {
         System.out.println("The operation is still going...");
         Game.delay();
         if (Math.random() < 0.7) { //changed to 70%. 50% was too low.
-            System.out.println("'" + this.animalName.toUpperCase() + "'" + " is saved!!!!");
+            System.out.println(ANSI_GREEN+ "'" + this.animalName.toUpperCase() + "'" + " is SAVED!!!"+ANSI_RESET);
             Game.delay();
         } else {
             System.out.println("\nUnfortunately, little " + this.animalName.toUpperCase() + " was too sick and could not be saved.");
@@ -76,7 +78,7 @@ public abstract class Animal {
 
     public void ageing() {
         this.initialAge++;
-        if (this.initialAge >= this.maxAge) {
+        if (this.initialAge > this.maxAge) {
             System.out.println(this.animalName + " is too old....");
             this.die();
         }

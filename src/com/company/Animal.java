@@ -16,6 +16,7 @@ public abstract class Animal {
     public boolean sick;
     public int vetPrice;
     public int initialAge;
+    public int sickBefore;
 
     enum Gender {
         MALE,
@@ -32,6 +33,7 @@ public abstract class Animal {
         this.vetPrice = vetPrice;
         this.maxAge = maxAge;
         this.initialAge = 1;
+        this.sickBefore=0;
 
     }
 
@@ -67,8 +69,10 @@ public abstract class Animal {
         Game.delay();
         System.out.println("The operation is still going...");
         Game.delay();
-        if (Math.random() < 0.7) { //changed to 70%. 50% was too low.
+        if (Math.random() < 0.5) {
             System.out.println(ANSI_GREEN+ "'" + this.animalName.toUpperCase() + "'" + " is SAVED!!!"+ANSI_RESET);
+            this.sickBefore=1;
+            this.sick=false;
             Game.delay();
         } else {
             System.out.println("\nUnfortunately, little " + this.animalName.toUpperCase() + " was too sick and could not be saved.");
@@ -91,7 +95,10 @@ public abstract class Animal {
     }
 
     public void animalGetSick() {
-        if(Math.random() < 0.1)
-            this.sick = true;
-    } // changed to 10%. 20% was too high.
+        if(this.initialAge>3){
+            if(Math.random() < 0.2){
+                this.sick = true;
+            }
+        }
+    }
 }

@@ -42,14 +42,18 @@ public class Game {
 
         var roundCounter = 0;
         while (!win && roundCounter < nRounds) {
+            Player toRemove=null;
             for (Player player : playerList) {
                 clear();
                 System.out.println(ANSI_CYAN + "ROUND " + (roundCounter + 1) + ANSI_RESET);
                 System.out.println("=== " + ANSI_CYAN + player.name.toUpperCase() + ANSI_RESET + " === is your turn to play----------------");
                 roundOptions(player);
                 saveSickAnimal(player);
-
+                if(checkPlayerNoMoney(player)){
+                    toRemove=player;
+                }
             }
+            playerList.remove(toRemove);
             roundCounter++;
         }
         finalRound();
@@ -189,10 +193,11 @@ public class Game {
     public void buyFoodOptions(Player playerName) {
         clear();
         System.out.print(ANSI_YELLOW+ """
-                    PIZZA ONLY for Dogs and Unicorns
-                    BURGER ONLY for Crocodiles, Condors and Dogs
-                    SALAD ONLY for Rabbits and Condors
-                    -----------------------------------------------\n"""+ANSI_RESET);
+                PIZZA ONLY for Dogs and Unicorns
+                BURGER ONLY for Crocodiles, Condors and Dogs
+                SALAD ONLY for Rabbits and Condors
+                -----------------------------------------------
+                """ +ANSI_RESET);
         System.out.println(ANSI_CYAN+ "=== " + playerName.name.toUpperCase() +" === "+ANSI_RESET+ "is playing----------------");
         System.out.println("You have this amount of money available: $" + playerName.money);
         System.out.println("Food List" +
@@ -553,7 +558,7 @@ public class Game {
         if (playerName.haveAnimal.size() != 0) {
             for (Animal animal : playerName.haveAnimal) {
                 animal.animalGetSick();
-                if (animal.sick) {
+                if (animal.sick && animal.sickBefore==0) {
                     clear();
                     System.out.println(ANSI_RED + "OH NO !! I am sorry " + playerName.name.toUpperCase() +
                             "\nBefore going to the next round you need to make an important decision." +
@@ -692,5 +697,33 @@ public class Game {
         }
 
     }
-
+    public boolean checkPlayerNoMoney(Player player){
+        var noMoney=false;
+        if(player.money<Dog.price && player.haveAnimal.size()==0){
+            clear();
+            System.out.println(ANSI_RED+"Player: '"+ player.name.toUpperCase() +"' can't continue playing. Not ENOUGH MONEY and has NO ANIMALS.");
+            delay();
+            System.out.println("""
+                                  ___         \s
+                                 /   \\\\       \s
+                           /\\\\ | . . \\\\      \s
+                         ////\\\\|     ||      \s
+                       ////   \\\\ ___//\\      \s
+                      ///      \\\\      \\     \s
+                     ///       |\\\\      |    \s
+                    //         | \\\\  \\   \\   \s
+                    /          |  \\\\  \\   \\  \s
+                               |   \\\\ /   /  \s
+                               |    \\/   /   \s
+                               |     \\\\/|    \s
+                               |      \\\\|    \s
+                               |       \\\\    \s
+                               |        |    \s
+                               |_________\\   \s""");
+            System.out.println("'"+player.name+ "' has been REMOVED from the game."+ANSI_RESET);
+            delay();
+            noMoney=true;
+        }
+        return noMoney;
+    }
 }

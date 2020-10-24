@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Player {
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_RESET = "\u001B[0m";
+
     public String name;
     public int money;
     public ArrayList<Animal> haveAnimal = new ArrayList<>();
@@ -11,7 +14,7 @@ public class Player {
 
     public Player(String name){
         this.name = name;
-        this.money= 10000;
+        this.money= 2000;
 
     }
     public  boolean feedAnimal(Animal animalToFeed,double kg, String feedingFood){
@@ -58,10 +61,17 @@ public class Player {
             Game.clear();
         }
         if(animalToMate2.getClass().equals(animalToMate1.getClass())&&(animalToMate2.gender!=animalToMate1.gender)){
-            if(animalToMate2.initialAge>3 && animalToMate1.initialAge>3)
-                possible=true;
+            if(animalToMate2.initialAge>3 && animalToMate1.initialAge>3){
+                if(animalToMate2.initialAge<=animalToMate2.maxAge-2 && animalToMate1.initialAge<=animalToMate1.maxAge-2){
+                    possible=true;
+                }else{
+                    System.out.println("Sorry, Animals are now TOO OLD too mate...");
+                    Game.delay();
+                    Game.clear();
+                }
+            }
             else{
-                System.out.println("Animals too YOUNG to mate. Wait 1-2 years");
+                System.out.println("Animals too YOUNG to mate.");
                 Game.delay();
                 Game.clear();
             }
@@ -73,4 +83,5 @@ public class Player {
         }
         return possible;
     }
+
 }

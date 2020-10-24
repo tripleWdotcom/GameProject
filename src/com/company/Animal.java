@@ -54,13 +54,18 @@ public abstract class Animal {
     }
 
     public int getCurrentPrice() {
-        return price * health / 100;
+        if(initialAge<=(maxAge-2))
+            return price * health / 100 * initialAge/2;
+        else
+            return price * health / 100 * initialAge / 8;
+
+
     }
 
 
     public void checkHealth(double health) {
         if ((int) health == 1)
-            System.out.println(ANSI_RED + " --" + this.animalName.toUpperCase() + " is in CRITICAL condition, it will die next round." + ANSI_RESET);
+            System.out.println(ANSI_RED + " --" + this.animalName.toUpperCase() + " is in CRITICAL condition.FEED it or it will die next round." + ANSI_RESET);
         if ((int) health == 0)
             this.die();
     }

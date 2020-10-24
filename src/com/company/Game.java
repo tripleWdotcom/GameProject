@@ -19,30 +19,23 @@ public class Game {
 
 
     public Game() {
-        System.out.println(ANSI_YELLOW + """
-                 =================  WELCOME TO THE  ===================
-                 ___         _     _____                   _            \s
-                | _ \\  ___  | |_  |_   _|  _ _   __ _   __| |  ___   _ _\s
-                |  _/ / -_) |  _|   | |   | '_| / _` | / _` | / -_) | '_|
-                |_|   \\___|  \\__|   |_|   |_|   \\__,_| \\__,_| \\___| |_| \s
-                                                                        \s
-                ====================== G A M E ========================
-                                                                        """+ANSI_RESET);
+        gameLogo();
+        info();
         int nPlayers = promptInt("How many players? (1-4)", 1, 4);
         for (int i = 0; i < nPlayers; i++) {
             System.out.printf("Type Name of Player %d : ", i + 1);
             var name = scan.nextLine();
             playerList.add(new Player(name));
-            System.out.printf(ANSI_CYAN+ playerList.get(i).name.toUpperCase() +ANSI_RESET+ " - will be Player %d.%n", i + 1);
+            System.out.printf(ANSI_CYAN+ playerList.get(i).name.toUpperCase() +ANSI_RESET+ " - will be Player %d.%n\n", i + 1);
         }
-        var nRounds = promptInt("\nHow many rounds do you want to play? (5-30)", 5, 30);
+        var nRounds = promptInt("\nHow many rounds do you want to play? (5-30) (Recommended rounds: 15-20)", 5, 30);
         System.out.println(ANSI_YELLOW+ "Processing..."+ANSI_RESET);
         delay();
         clear();
 
         var roundCounter = 0;
         while (!win && roundCounter < nRounds) {
-            Player toRemove=null;
+            Player toRemoveNoMoneyPlayer=null;
             for (Player player : playerList) {
                 clear();
                 System.out.println(ANSI_CYAN + "ROUND " + (roundCounter + 1) + ANSI_RESET);
@@ -50,11 +43,17 @@ public class Game {
                 roundOptions(player);
                 saveSickAnimal(player);
                 if(checkPlayerNoMoney(player)){
-                    toRemove=player;
+                    toRemoveNoMoneyPlayer=player;
                 }
             }
-            playerList.remove(toRemove);
+            playerList.remove(toRemoveNoMoneyPlayer);
             roundCounter++;
+            if(roundCounter==nRounds-1) {
+                System.out.println( ANSI_YELLOW+"THIS WILL BE THE "+nRounds+ " ROUND.\n\nIT WILL BE THE FINAL ROUND. MAKE THE RIGHT DECISIONS. GOOD LUCK!!"+ANSI_RESET);
+                delay();
+                shortDelay();
+            }
+
         }
         finalRound();
         findWinner();
@@ -202,8 +201,8 @@ public class Game {
         System.out.println("You have this amount of money available: $" + playerName.money);
         System.out.println("Food List" +
                 "\n---------------------------------------------" +
-                "\n1: Big Pizza  $" + BigPizza.pricePerK + "\n2: Burger $" + Burger.pricePerK +
-                " \n3: Salad  $" + Salad.pricePerK + " \n4: Stop Buying Food" +
+                "\n1: Big Pizza  -  $" + BigPizza.pricePerK + "\n2: Burger  -  $" + Burger.pricePerK +
+                " \n3: Salad  -  $" + Salad.pricePerK + " \n4: Stop Buying Food" +
                 "\n---------------------------------------------");
         int opt = promptInt("Choose Option number: ", 1, 4);
         System.out.println("Option " + opt + " was selected.");
@@ -390,7 +389,7 @@ public class Game {
                 var exit = false;
                 do {
                     System.out.println("What kid of food do you want to use. Type (S) for Salad, (B) for Burger and (P) for Big Pizza ");
-                    foodInput = scan.next();
+                    foodInput = scan.nextLine();
                     if (foodInput.equalsIgnoreCase("s") && playerName.haveFood.containsKey(Salad.name) && playerName.haveFood.get(Salad.name) != 0) {
                         foodInput = "Salad";
                         exit = true;
@@ -587,12 +586,17 @@ public class Game {
     static public void showAnimals(Player playerName) {
         if (playerName.haveAnimal.size() != 0) {
 
-            System.out.println(ANSI_GREEN + playerName.name.toUpperCase() + "'s ANIMAL STORE" +
+            System.out.print(ANSI_GREEN + playerName.name.toUpperCase() + "'s ANIMAL STORE" +
                     "\n---------------------------------------------" + ANSI_RESET);
             for (Animal animal : playerName.haveAnimal) {
-                System.out.print(ANSI_GREEN + "-" + animal.getClass().getSimpleName() + "  '" + animal.animalName.toUpperCase() + "'  " + animal.initialAge + " year(s) old  " + " (" + animal.health + "% hp)" + "  (" + animal.gender + ")\n");
+                System.out.print(ANSI_GREEN + "\n-" + animal.getClass().getSimpleName() + "  '" + animal.animalName.toUpperCase() + "'  " + animal.initialAge + " year(s) old  " + " (" + animal.health + "% hp)" + "  (" + animal.gender + ") ");
+                if(animal.initialAge==animal.maxAge-4)
+                    System.out.print(ANSI_BLUE+"- $ TOP SELLING POINT"+ ANSI_RESET);
+                if(animal.initialAge==animal.maxAge-2)
+                    System.out.print(ANSI_RED+"-This "+animal.getClass().getSimpleName()+ " is old now."+ANSI_RESET);
+
             }
-            System.out.print("---------------------------------------------\n" + ANSI_RESET);
+            System.out.print("\n---------------------------------------------\n" + ANSI_RESET);
             for (Animal animal : playerName.haveAnimal) {
                 animal.checkHealth(animal.health);
             }
@@ -679,7 +683,7 @@ public class Game {
         for (Player player : playerList) {
             var sum = 0;
             for (Animal animal : player.haveAnimal) {
-                sum += (animal.getCurrentPrice() / animal.initialAge);
+                sum += (animal.getCurrentPrice());
             }
             sum += player.money;
             winnersMoney.put(player.name, sum);
@@ -705,7 +709,7 @@ public class Game {
             delay();
             System.out.println("""
                                   ___         \s
-                                 /   \\\\       \s
+                                /   \\\\       \s
                            /\\\\ | . . \\\\      \s
                          ////\\\\|     ||      \s
                        ////   \\\\ ___//\\      \s
@@ -720,10 +724,32 @@ public class Game {
                                |       \\\\    \s
                                |        |    \s
                                |_________\\   \s""");
-            System.out.println("'"+player.name+ "' has been REMOVED from the game."+ANSI_RESET);
+            System.out.println("'"+player.name.toUpperCase()+ "' has been REMOVED from the game."+ANSI_RESET);
             delay();
             noMoney=true;
         }
         return noMoney;
+    }
+    public void gameLogo(){
+        System.out.println(ANSI_YELLOW + """
+                 =================  WELCOME TO THE  ===================
+                 ___         _     _____                   _            \s
+                | _ \\  ___  | |_  |_   _|  _ _   __ _   __| |  ___   _ _\s
+                |  _/ / -_) |  _|   | |   | '_| / _` | / _` | / -_) | '_|
+                |_|   \\___|  \\__|   |_|   |_|   \\__,_| \\__,_| \\___| |_| \s
+                                                                        \s
+                ====================== G A M E ========================
+                                                                        """+ANSI_RESET);
+    }
+
+
+    public void info(){
+
+        System.out.println(ANSI_YELLOW+" --------------------------------------------------\n" +
+                "| Invest in buying Animals and take care of them!  |\n" +
+                "| Mate them to get more!                           |\n" +
+                "| Sell them to profit!                             |\n" +
+                "| Older animals give more profit, but NOT too old. |\n" +
+                " ---------------------------------------------------\n"+ANSI_RESET);
     }
 }

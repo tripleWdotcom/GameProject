@@ -74,14 +74,26 @@ public abstract class Animal {
         Game.delay();
         System.out.println("The operation is still going...");
         Game.delay();
-        if (Math.random() < 0.5) {
-            System.out.println(ANSI_GREEN+ "'" + this.animalName.toUpperCase() + "'" + " is SAVED!!!"+ANSI_RESET);
-            this.sickBefore=1;
-            this.sick=false;
-            Game.delay();
-        } else {
-            System.out.println("\nUnfortunately, little " + this.animalName.toUpperCase() + " was too sick and could not be saved.");
-            this.die();
+        if (this.health < 40) {
+            if (Math.random() < 0.5) {
+                System.out.println(ANSI_GREEN+ "'" + this.animalName.toUpperCase() + "'" + " is SAVED!!!"+ANSI_RESET);
+                this.sickBefore=1;
+                this.sick=false;
+                Game.delay();
+            }else {
+                System.out.println("\nUnfortunately, little " + this.animalName.toUpperCase() + " was too sick and could not be saved.");
+                this.die();
+            }
+        }else{
+            if (Math.random() < 0.7) {
+                System.out.println(ANSI_GREEN+ "'" + this.animalName.toUpperCase() + "'" + " is SAVED!!!"+ANSI_RESET);
+                this.sickBefore=1;
+                this.sick=false;
+                Game.delay();
+            }else {
+                System.out.println("\nUnfortunately, little " + this.animalName.toUpperCase() + " was too sick and could not be saved.");
+                this.die();
+            }
         }
     }
 

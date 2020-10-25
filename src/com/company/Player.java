@@ -27,13 +27,13 @@ public class Player {
             }
         if(animalToFeed instanceof Crocodile)
             if(feedingFood.equalsIgnoreCase("Burger")){
-                animalToFeed.health+=kg*5;
+                animalToFeed.health+=kg*10;
                 correctFood=true;
 
             }
         if(animalToFeed instanceof Condor)
             switch (feedingFood){
-                case "Burger","Salad" ->{animalToFeed.health+=kg*5;
+                case "Burger","Salad" ->{animalToFeed.health+=kg*10;
                     correctFood=true;
                 }
             }

@@ -648,7 +648,7 @@ public class Game {
 
     public void finalRound() {
         System.out.println("THAT WAS THE FINAL ROUND !!!" +
-                "The system is working very HARD to find a winner. Be patient");
+                " The system is working very HARD to find a winner. Be patient");
         delay();
         System.out.println("Still working...");
         delay();
